@@ -13,6 +13,7 @@ BuildRequires:  gcc-c++
 BuildRequires:  SFML-devel >= 2.3.2
 BuildRequires:  mesa-libGLU-devel >= 9.0.0
 BuildRequires:  desktop-file-utils
+ExcludeArch:    ppc64le
 URL:            http://emptyepsilon.org/
 Source0:        https://github.com/daid/EmptyEpsilon/archive/EE-%{version}.zip#/EmptyEpsilon-EE-%{version}.zip
 Source1:        https://github.com/daid/SeriousProton/archive/EE-%{version}.zip#/SeriousProton-EE-%{version}.zip
