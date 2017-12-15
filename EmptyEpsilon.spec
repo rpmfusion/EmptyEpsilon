@@ -1,6 +1,6 @@
 %global version_major 2017
-%global version_minor 05
-%global version_patch 06
+%global version_minor 11
+%global version_patch 03
 
 Name:           EmptyEpsilon
 Summary:        Spaceship bridge simulator game
@@ -79,6 +79,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 %{_datadir}/applications/%{name}.desktop
 
 %changelog
+* Fri Dec 15 2017 Jan Kalina <jkalina@redhat.com> - 2017.11.03-1
+- New version of game
+
 * Tue Sep 5 2017 Jan Kalina <jkalina@redhat.com> - 2017.05.06-1
 - New version of game, applied fixes from rpmfushion review
 
