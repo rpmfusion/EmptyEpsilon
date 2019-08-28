@@ -1,11 +1,11 @@
-%global version_major 2018
-%global version_minor 02
-%global version_patch 15
+%global version_major 2019
+%global version_minor 05
+%global version_patch 21
 
 Name:           EmptyEpsilon
 Summary:        Spaceship bridge simulator game
 Version:        %{version_major}.%{version_minor}.%{version_patch}
-Release:        5%{?dist}
+Release:        1%{?dist}
 License:        GPLv2
 Recommends:     xclip
 BuildRequires:  cmake
@@ -79,6 +79,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 %{_datadir}/applications/%{name}.desktop
 
 %changelog
+* Wed Aug 28 2019 Jan Kalina <honza889@gmail.com> - 2019.05.21-1
+- New version of game
+
 * Fri Aug 09 2019 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 2018.02.15-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
