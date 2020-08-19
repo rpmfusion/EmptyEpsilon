@@ -2,13 +2,15 @@
 %global version_minor 05
 %global version_patch 21
 
+%undefine __cmake_in_source_build
+
 Name:           EmptyEpsilon
 Summary:        Spaceship bridge simulator game
 Version:        %{version_major}.%{version_minor}.%{version_patch}
 Release:        3%{?dist}
 License:        GPLv2
 Recommends:     xclip
-BuildRequires:  cmake
+BuildRequires:  cmake3
 BuildRequires:  gcc-c++
 BuildRequires:  SFML-devel >= 2.3.2
 BuildRequires:  mesa-libGLU-devel >= 9.0.0
@@ -34,19 +36,16 @@ Note: Network play require port 35666 UDP and TCP allowed in firewall.
 %autosetup -b 1 -n EmptyEpsilon-EE-%{version}
 
 %build
-mkdir _build
-cd _build
-%cmake .. \
+%cmake3 \
   -DSERIOUS_PROTON_DIR=%{_builddir}/SeriousProton-EE-%{version}/ \
   -DCPACK_PACKAGE_VERSION_MAJOR=%{version_major} \
   -DCPACK_PACKAGE_VERSION_MINOR=%{version_minor} \
   -DCPACK_PACKAGE_VERSION_PATCH=%{version_patch} \
   -DCONFIG_DIR=%{_sysconfdir}/emptyepsilon/
-%make_build
+%cmake3_build
 
 %install
-cd _build
-%make_install
+%cmake3_install
 
 # auto-generated help from /usr to buildroot
 mv %{buildroot}%{_prefix}/script_reference.html ../
