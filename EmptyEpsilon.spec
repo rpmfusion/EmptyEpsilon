@@ -48,11 +48,11 @@ Note: Network play require port 35666 UDP and TCP allowed in firewall.
 %cmake3_install
 
 # auto-generated help from /usr to buildroot
-mv %{buildroot}%{_prefix}/script_reference.html ../
+mv %{buildroot}%{_prefix}/script_reference.html ./
 
 # icon to pixmaps
 mkdir -p %{buildroot}%{_datadir}/pixmaps
-install -p -m 644 ../logo.png %{buildroot}%{_datadir}/pixmaps/EmptyEpsilon.png
+install -p -m 644 ./logo.png %{buildroot}%{_datadir}/pixmaps/EmptyEpsilon.png
 
 # .desktop file
 mkdir -p %{buildroot}%{_datadir}/applications
