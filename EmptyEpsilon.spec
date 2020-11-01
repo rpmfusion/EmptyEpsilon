@@ -1,13 +1,13 @@
-%global version_major 2019
-%global version_minor 05
-%global version_patch 21
+%global version_major 2020
+%global version_minor 08
+%global version_patch 25
 
 %undefine __cmake_in_source_build
 
 Name:           EmptyEpsilon
 Summary:        Spaceship bridge simulator game
 Version:        %{version_major}.%{version_minor}.%{version_patch}
-Release:        3%{?dist}
+Release:        1%{?dist}
 License:        GPLv2
 Recommends:     xclip
 BuildRequires:  cmake3
@@ -78,6 +78,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 %{_datadir}/applications/%{name}.desktop
 
 %changelog
+* Sun Nov 01 2020 Michal Schorm <mschorm@redhat.com> - 2020.08.25-1
+- Rebase to version 2020.08.25
+
 * Wed Aug 19 2020 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 2019.05.21-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
 
