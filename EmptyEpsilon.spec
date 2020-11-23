@@ -1,6 +1,6 @@
 %global version_major 2020
-%global version_minor 08
-%global version_patch 25
+%global version_minor 11
+%global version_patch 23
 
 %undefine __cmake_in_source_build
 
@@ -78,6 +78,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 %{_datadir}/applications/%{name}.desktop
 
 %changelog
+* Tue Nov 24 2020 Michal Schorm <mschorm@redhat.com> - 2020.11.23-1
+- Rebase to version 2020.11.23
+
 * Sun Nov 01 2020 Michal Schorm <mschorm@redhat.com> - 2020.08.25-1
 - Rebase to version 2020.08.25
 
