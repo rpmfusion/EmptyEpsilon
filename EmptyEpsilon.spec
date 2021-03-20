@@ -1,13 +1,13 @@
-%global version_major 2020
-%global version_minor 11
-%global version_patch 23
+%global version_major 2021
+%global version_minor 03
+%global version_patch 16
 
 %undefine __cmake_in_source_build
 
 Name:           EmptyEpsilon
 Summary:        Spaceship bridge simulator game
 Version:        %{version_major}.%{version_minor}.%{version_patch}
-Release:        2%{?dist}
+Release:        1%{?dist}
 License:        GPLv2
 Recommends:     xclip
 BuildRequires:  cmake3
@@ -47,9 +47,6 @@ Note: Network play require port 35666 UDP and TCP allowed in firewall.
 %install
 %cmake3_install
 
-# auto-generated help from /usr to buildroot
-mv %{buildroot}%{_prefix}/script_reference.html ./
-
 # icon to pixmaps
 mkdir -p %{buildroot}%{_datadir}/pixmaps
 install -p -m 644 ./logo.png %{buildroot}%{_datadir}/pixmaps/EmptyEpsilon.png
@@ -78,6 +75,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 %{_datadir}/applications/%{name}.desktop
 
 %changelog
+* Fri Mar 19 2021 Michal Schorm <mschorm@redhat.com> - 2021.03.16-1
+- Rebase to version 2021.03.16
+
 * Thu Feb 04 2021 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 2020.11.23-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
