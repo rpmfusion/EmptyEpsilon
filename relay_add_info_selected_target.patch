@@ -1,0 +1,147 @@
+--- EmptyEpsilon-EE-2021.03.16/src/screens/crew6/relayScreen.h	2021-03-16 14:36:34.000000000 +0100
++++ EmptyEpsilon-EE-2021.03.16/src/screens/crew6/relayScreen.h_patched	2021-03-28 11:28:54.559348446 +0200
+@@ -31,6 +31,15 @@ private:
+ 
+     GuiKeyValueDisplay* info_callsign;
+     GuiKeyValueDisplay* info_faction;
++    GuiKeyValueDisplay* info_type;
++
++    GuiKeyValueDisplay* info_empty1;
++    GuiKeyValueDisplay* info_empty2;
++
++    GuiKeyValueDisplay* info_distance;
++
++    GuiKeyValueDisplay* info_shields;
++    GuiKeyValueDisplay* info_hull;
+ 
+     GuiKeyValueDisplay* info_reputation;
+     GuiKeyValueDisplay* info_clock;
+
+
+
+
+
+
+
+
+
+--- EmptyEpsilon-EE-2021.03.16/src/screens/crew6/relayScreen.cpp	2021-03-28 12:42:44.135860437 +0200
++++ EmptyEpsilon-EE-2021.03.16/src/screens/crew6/relayScreen.cpp_patched	2021-03-28 12:43:57.739816082 +0200
+@@ -76,13 +76,38 @@ RelayScreen::RelayScreen(GuiContainer* o
+         radar->setViewPosition(my_spaceship->getPosition());
+ 
+     GuiAutoLayout* sidebar = new GuiAutoLayout(this, "SIDE_BAR", GuiAutoLayout::LayoutVerticalTopToBottom);
+-    sidebar->setPosition(-20, 150, ATopRight)->setSize(250, GuiElement::GuiSizeMax);
++    sidebar->setPosition(-10, 10, ATopRight)->setSize(250, GuiElement::GuiSizeMax);
+ 
++
++
++
++
++
++    // Simple scan data.
+     info_callsign = new GuiKeyValueDisplay(sidebar, "SCIENCE_CALLSIGN", 0.4, tr("Callsign"), "");
+     info_callsign->setSize(GuiElement::GuiSizeMax, 30);
+-
+     info_faction = new GuiKeyValueDisplay(sidebar, "SCIENCE_FACTION", 0.4, tr("Faction"), "");
+     info_faction->setSize(GuiElement::GuiSizeMax, 30);
++    info_type = new GuiKeyValueDisplay(sidebar, "SCIENCE_TYPE", 0.4, tr("science","Type"), "");
++    info_type->setSize(GuiElement::GuiSizeMax, 30);
++
++    info_empty1 = new GuiKeyValueDisplay(sidebar, "SCIENCE_EMPTY1", 0.4, "", "");
++    info_empty1->setSize(GuiElement::GuiSizeMax, 30);
++
++    info_distance = new GuiKeyValueDisplay(sidebar, "SCIENCE_DISTANCE", 0.4, tr("science","Distance"), "");
++    info_distance->setSize(GuiElement::GuiSizeMax, 30);
++
++    info_empty2 = new GuiKeyValueDisplay(sidebar, "SCIENCE_EMPTY2", 0.4, "", "");
++    info_empty2->setSize(GuiElement::GuiSizeMax, 30);
++
++    info_shields = new GuiKeyValueDisplay(sidebar, "SCIENCE_SHIELDS", 0.4, tr("science", "Shields"), "");
++    info_shields->setSize(GuiElement::GuiSizeMax, 30);
++    info_hull = new GuiKeyValueDisplay(sidebar, "SCIENCE_HULL", 0.4, tr("science", "Hull"), "");
++    info_hull->setSize(GuiElement::GuiSizeMax, 30);
++
++
++
++
+ 
+     zoom_slider = new GuiSlider(this, "ZOOM_SLIDER", 50000.0f, 6250.0f, 50000.0f, [this](float value) {
+         zoom_label->setText(tr("Zoom: {zoom}x").format({{"zoom", string(50000.0f / value, 1.0f)}}));
+@@ -214,7 +239,7 @@ void RelayScreen::onDraw(sf::RenderTarge
+ 
+     GuiOverlay::onDraw(window);
+ 
+-    info_faction->setValue("-");
++    info_faction->setValue(" ");
+ 
+     // If the player has a target and the player isn't destroyed...
+     if (targets.get() && my_spaceship)
+@@ -275,16 +300,44 @@ void RelayScreen::onDraw(sf::RenderTarge
+         P<SpaceStation> station = obj;
+         P<ScanProbe> probe = obj;
+ 
++	info_callsign->setValue(" ");
++	info_faction->setValue(" ");
++	info_type->setValue(" ");
++	info_empty1->setValue(" ");
++	info_distance->setValue(" ");
++	info_empty2->setValue(" ");
++	info_shields->setValue(" ");
++	info_hull->setValue(" ");
++
+         info_callsign->setValue(obj->getCallSign());
+ 
++        sf::Vector2f position_diff = obj->getPosition() - my_spaceship->getPosition();
++        float distance = sf::length(position_diff);
++        info_distance->setValue(string(distance / 1000.0f, 1) + DISTANCE_UNIT_1K);
++
++
+         if (ship)
+         {
+             if (ship->getScannedStateFor(my_spaceship) >= SS_SimpleScan)
+             {
+                 info_faction->setValue(factionInfo[obj->getFactionId()]->getLocaleName());
++
++                info_type->setValue(ship->getTypeName());
++                info_shields->setValue(ship->getShieldDataString());
++                info_hull->setValue(int(ceil(ship->getHull())));
++
+             }
+         }else{
+             info_faction->setValue(factionInfo[obj->getFactionId()]->getLocaleName());
++
++            // If the target is a station, show basic tactical info.
++            if (station)
++            {
++             	info_type->setValue(station->template_name);
++                info_shields->setValue(station->getShieldDataString());
++                info_hull->setValue(int(ceil(station->getHull())));
++            }
++
+         }
+ 
+         if (probe && my_spaceship && probe->owner_id == my_spaceship->getMultiplayerId() && probe->canBeTargetedBy(my_spaceship))
+@@ -307,7 +360,7 @@ void RelayScreen::onDraw(sf::RenderTarge
+         hack_target_button->disable();
+         link_to_science_button->disable();
+         link_to_science_button->setValue(false);
+-        info_callsign->setValue("-");
++        info_callsign->setValue(" ");
+     }
+     if (my_spaceship)
+     {
+@@ -322,7 +375,12 @@ void RelayScreen::onDraw(sf::RenderTarge
+     }
+ 
+     if (targets.getWaypointIndex() >= 0)
+-        delete_waypoint_button->enable();
++	{
++         sf::Vector2f position_diff = my_spaceship->waypoints[targets.getWaypointIndex()] - my_spaceship->getPosition();
++         float distance = sf::length(position_diff);
++         info_distance->setValue(string(distance / 1000.0f, 1) + DISTANCE_UNIT_1K);
++         delete_waypoint_button->enable();
++	}
+     else
+         delete_waypoint_button->disable();
+ }
