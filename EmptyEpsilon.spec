@@ -20,18 +20,6 @@ URL:            http://emptyepsilon.org/
 Source0:        https://github.com/daid/EmptyEpsilon/archive/EE-%{version}.zip#/EmptyEpsilon-EE-%{version}.zip
 Source1:        https://github.com/daid/SeriousProton/archive/EE-%{version}.zip#/SeriousProton-EE-%{version}.zip
 
-# Finished tested patched which should be a standard pack of enhacements
-Patch1:         science_radar_setRangeIndicatorStepSize.patch
-Patch2:         relay_show_asteroids.patch
-
-# WIP tested patches which are ready to use, but the feature is only half-complete
-Patch100:	relay_add_info_selected_target.patch
-
-# Unstable patches
-#Patch101:	relay_visibility_range.patch
-#Patch101:	relay_add_info_shipType.patch
-#Patch102:	fix.patch
-
 %description
 EmptyEpsilon places you in the roles of a spaceship's bridge officers, like
 those seen in Star Trek. While you can play EmptyEpsilon alone or with friends,
@@ -45,7 +33,7 @@ information and follow orders.
 Note: Network play require port 35666 UDP and TCP allowed in firewall.
 
 %prep
-%autosetup -b 1 -p1 -n EmptyEpsilon-EE-%{version}
+%autosetup -b 1 -n EmptyEpsilon-EE-%{version}
 
 %build
 %cmake3 \
