@@ -1,6 +1,6 @@
 %global version_major 2021
 %global version_minor 03
-%global version_patch 16
+%global version_patch 31
 
 %undefine __cmake_in_source_build
 
@@ -75,6 +75,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 %{_datadir}/applications/%{name}.desktop
 
 %changelog
+* Sat Apr 10 2021 Michal Schorm <mschorm@redhat.com> - 2021.03.31-1
+- Rebase to version 2021.03.31
+
 * Fri Mar 19 2021 Michal Schorm <mschorm@redhat.com> - 2021.03.16-1
 - Rebase to version 2021.03.16
 
