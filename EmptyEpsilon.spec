@@ -1,6 +1,6 @@
 %global version_major 2021
-%global version_minor 03
-%global version_patch 31
+%global version_minor 06
+%global version_patch 23
 
 %undefine __cmake_in_source_build
 
@@ -9,16 +9,33 @@ Summary:        Spaceship bridge simulator game
 Version:        %{version_major}.%{version_minor}.%{version_patch}
 Release:        1%{?dist}
 License:        GPLv2
-Recommends:     xclip
+
 BuildRequires:  cmake3
 BuildRequires:  gcc-c++
-BuildRequires:  SFML-devel >= 2.3.2
+BuildRequires:  SFML-devel >= 2.5.1
 BuildRequires:  mesa-libGLU-devel >= 9.0.0
 BuildRequires:  desktop-file-utils
+# The following version of "glm-devel" is not currently available for Fedora 33 and older
+BuildRequires:  glm-devel >= 0.9.9.8
+BuildRequires:  json11-devel
+
 ExcludeArch:    ppc64 ppc64le
+
 URL:            http://emptyepsilon.org/
 Source0:        https://github.com/daid/EmptyEpsilon/archive/EE-%{version}.zip#/EmptyEpsilon-EE-%{version}.zip
 Source1:        https://github.com/daid/SeriousProton/archive/EE-%{version}.zip#/SeriousProton-EE-%{version}.zip
+
+# The "FindJson11.cmake" file has been taken from the following project:
+#   https://github.com/MASKOR/mapit/blob/master/cmake/Findjson11.cmake
+# which is licensed under LGPL-3.0 License
+Source2:        Findjson11.cmake
+
+Source3:        json_SeriousProton.patch
+
+Patch1:         glm_debundle.patch
+Patch2:         json.patch
+
+Recommends:     xclip
 
 %description
 EmptyEpsilon places you in the roles of a spaceship's bridge officers, like
@@ -34,6 +51,12 @@ Note: Network play require port 35666 UDP and TCP allowed in firewall.
 
 %prep
 %autosetup -b 1 -n EmptyEpsilon-EE-%{version}
+
+# Patch SeriousProton, instead of the EmptyEpsilon
+patch ../SeriousProton-EE-%{version}/CMakeLists.txt %{SOURCE3}
+
+# Copy CMake module for finding "json11" to the project
+cp %{SOURCE2} cmake/
 
 %build
 %cmake3 \
@@ -75,6 +98,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 %{_datadir}/applications/%{name}.desktop
 
 %changelog
+* Sat Jun 26 2021 Michal Schorm <mschorm@redhat.com> - 2021.06.23-1
+- Rebase to version 2021.06.23
+
 * Sat Apr 10 2021 Michal Schorm <mschorm@redhat.com> - 2021.03.31-1
 - Rebase to version 2021.03.31
 

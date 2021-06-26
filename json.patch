@@ -1,0 +1,14 @@
+Unbundle JSON11
+Offer the system version of the "JSON11" intead of the bundled one
+
+--- EmptyEpsilon-EE-2021.06.23/CMakeLists.txt	2021-06-26 14:34:28.208302135 +0200
++++ EmptyEpsilon-EE-2021.06.23/CMakeLists.txt_patched	2021-06-26 17:43:14.645447225 +0200
+@@ -59,6 +59,8 @@ endif()
+ # SeriousProton
+ # Use SP provided json library.
+ set(SERIOUSPROTON_WITH_JSON ON CACHE BOOL "" FORCE)
++find_package(json11 REQUIRED)
++
+ add_subdirectory("${SERIOUS_PROTON_DIR}" "${PROJECT_BINARY_DIR}/SeriousProton" EXCLUDE_FROM_ALL)
+ 
+ message(STATUS "Crash Logger is: ${ENABLE_CRASH_LOGGER}")

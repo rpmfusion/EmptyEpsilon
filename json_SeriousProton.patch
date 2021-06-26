@@ -1,0 +1,14 @@
+Unbundle JSON11
+Prevent the project to use the bundled sources; use system version instead
+
+--- SeriousProton-EE-2021.06.23/CMakeLists.txt	2021-06-09 08:01:37.000000000 +0200
++++ SeriousProton-EE-2021.06.23/CMakeLists.txt_patched	2021-06-26 17:40:59.168219386 +0200
+@@ -87,7 +87,7 @@ add_subdirectory(src/GL)
+ add_subdirectory(src/libopus)
+ 
+ if(SERIOUSPROTON_WITH_JSON)
+-    add_subdirectory(src/json11)
++#    add_subdirectory(src/json11)
+ endif()
+ 
+ #---------------------------------File lists-----------------------------------
