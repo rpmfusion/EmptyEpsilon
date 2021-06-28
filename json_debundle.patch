@@ -8,7 +8,7 @@ Prevent the project to use the bundled sources; use system version instead
  
  if(SERIOUSPROTON_WITH_JSON)
 -    add_subdirectory(src/json11)
-+#    add_subdirectory(src/json11)
++    find_package(json11 REQUIRED)
  endif()
  
  #---------------------------------File lists-----------------------------------

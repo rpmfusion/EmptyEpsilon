@@ -1,0 +1,25 @@
+From d52a1b1b61f6f7d248d154b49f005c850c1548a1 Mon Sep 17 00:00:00 2001
+From: FaramosCZ <mschorm@centrum.cz>
+Date: Mon, 28 Jun 2021 08:22:42 +0200
+Subject: [PATCH] Fix the path to the CMake modules (#130)
+
+---
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 657808d..22244ec 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
+ project(SeriousProton LANGUAGES CXX)
+ 
+ set(CMAKE_MODULE_PATH
+-    ${CMAKE_SOURCE_DIR}/cmake/
++    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/
+     ${CMAKE_MODULE_PATH}
+ )
+ 
+--
+libgit2 1.0.1
+

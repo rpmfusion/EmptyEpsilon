@@ -30,10 +30,21 @@ Source1:        https://github.com/daid/SeriousProton/archive/EE-%{version}.zip#
 # which is licensed under LGPL-3.0 License
 Source2:        Findjson11.cmake
 
-Source3:        json_SeriousProton.patch
 
+
+# EmptyEpsilon downstream patches:
 Patch1:         glm_debundle.patch
-Patch2:         json.patch
+
+# SeriousProton downstream patches:
+Patch20:        json_debundle.patch
+
+# EmptyEpsilon upstream patches:
+#Patch40:
+
+# SeriousProton upstream patches:
+Patch60:        upstream_SP_002_d52a1b1b61.patch
+
+
 
 Recommends:     xclip
 
@@ -50,21 +61,25 @@ information and follow orders.
 Note: Network play require port 35666 UDP and TCP allowed in firewall.
 
 %prep
-%autosetup -b 1 -n EmptyEpsilon-EE-%{version}
+%setup -q -a 1 -n EmptyEpsilon-EE-%{version}
 
-# Patch SeriousProton, instead of the EmptyEpsilon
-patch ../SeriousProton-EE-%{version}/CMakeLists.txt %{SOURCE3}
+%patch1 -p1
+%patch20 -p1 -d SeriousProton-EE-%{version}
+%patch60 -p1 -d SeriousProton-EE-%{version}
 
 # Copy CMake module for finding "json11" to the project
-cp %{SOURCE2} cmake/
+cp %{SOURCE2} SeriousProton-EE-%{version}/cmake/
 
 %build
 %cmake3 \
-  -DSERIOUS_PROTON_DIR=%{_builddir}/SeriousProton-EE-%{version}/ \
+  -DSERIOUS_PROTON_DIR=SeriousProton-EE-%{version}/ \
   -DCPACK_PACKAGE_VERSION_MAJOR=%{version_major} \
   -DCPACK_PACKAGE_VERSION_MINOR=%{version_minor} \
   -DCPACK_PACKAGE_VERSION_PATCH=%{version_patch} \
   -DCONFIG_DIR=%{_sysconfdir}/emptyepsilon/
+
+
+
 %cmake3_build
 
 %install
