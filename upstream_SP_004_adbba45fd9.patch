@@ -1,0 +1,131 @@
+From adbba45fd9ae5e020e43e5d7f9326f1355391209 Mon Sep 17 00:00:00 2001
+From: FaramosCZ <mschorm@redhat.com>
+Date: Tue, 29 Jun 2021 18:08:21 +0200
+Subject: [PATCH] CMake: Enhance json11 logic (#134)
+
+* Fix CMake deprecation warning in "JSON 11" bundled project
+ - Raise the minimal CMake version required for the "JSON 11" bundled project to the minimal CMake version required by the SeriousProton project itself, which is 3.8
+ - Remove bits of CMake code applicable only for CMake version < 3
+
+* CMake: Implement logic to use system version of the "json11" library instead of the bundled one
+Add a CMake module for finding the system "json11" library
+---
+ CMakeLists.txt            | 15 ++++++++++++++-
+ cmake/Findjson11.cmake    | 44 ++++++++++++++++++++++++++++++++++++++++++++
+ src/json11/CMakeLists.txt | 19 ++++++-------------
+ 3 files changed, 64 insertions(+), 14 deletions(-)
+ create mode 100644 cmake/Findjson11.cmake
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index bfc6ece..7b96f83 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -109,8 +109,21 @@ add_subdirectory(src/lua)
+ add_subdirectory(src/GL)
+ add_subdirectory(src/libopus)
+ 
++# json11
+ if(SERIOUSPROTON_WITH_JSON)
+-    add_subdirectory(src/json11)
++    SET(WITH_JSON "bundled" CACHE STRING "Which json11 to use (possible values are 'bundled' or 'system')")
++
++    if(WITH_JSON STREQUAL "system")
++        find_package(json11 QUIET)
++        if(json11_FOUND)
++            message(STATUS "json11 version used: SYSTEM")
++        else()
++            message(FATAL_ERROR "json11: system package is not found or is unusable")
++        endif()
++    elseif(WITH_JSON STREQUAL "bundled")
++        message(STATUS "json11 version used: BUNDLED")
++        add_subdirectory(src/json11)
++    endif()
+ endif()
+ 
+ #---------------------------------File lists-----------------------------------
+diff --git a/cmake/Findjson11.cmake b/cmake/Findjson11.cmake
+new file mode 100644
+index 0000000..780eb6f
+--- /dev/null
++++ b/cmake/Findjson11.cmake
+@@ -0,0 +1,44 @@
++# This "FindJson11.cmake" file has been taken from the following project:
++#   https://github.com/MASKOR/mapit/blob/master/cmake/Findjson11.cmake
++# which is licensed under LGPL-3.0 License
++# Aditional changes were done by Michal Schorm
++
++# Locate json11
++#
++# This module defines
++#  json11_FOUND, if false, do not try to link to json11
++#  json11_LIBRARY, where to find json11
++#  json11_INCLUDE_DIR, where to find json11.hpp
++#
++# If json11 is not installed in a standard path, you can use the json11_DIR CMake variable
++# to tell CMake where json11 is.
++
++find_path(json11_INCLUDE_DIR json11.hpp
++          PATHS
++          /usr/local/include/
++          /usr/include/
++          /sw/json11/         # Fink
++          /opt/local/json11/  # DarwinPorts
++          /opt/csw/json11/    # Blastwave
++          /opt/json11/
++          /include/)
++
++if(NOT WIN32)
++    SET(CMAKE_FIND_LIBRARY_SUFFIXES ".so" ".a")
++endif(NOT WIN32)
++
++find_library(json11_LIBRARY
++             NAMES  json11
++             PATH_SUFFIXES lib64 lib
++             PATHS  /usr/local
++                    /usr
++                    /sw
++                    /opt/local
++                    /opt/csw
++                    /opt
++                    /lib)
++
++# handle the QUIETLY and REQUIRED arguments and set json11_FOUND to TRUE if all listed variables are TRUE
++include(FindPackageHandleStandardArgs)
++FIND_PACKAGE_HANDLE_STANDARD_ARGS(json11 DEFAULT_MSG json11_INCLUDE_DIR json11_LIBRARY)
++mark_as_advanced(json11_INCLUDE_DIR json11_LIBRARY)
+diff --git a/src/json11/CMakeLists.txt b/src/json11/CMakeLists.txt
+index 819c36f..cb990e7 100644
+--- a/src/json11/CMakeLists.txt
++++ b/src/json11/CMakeLists.txt
+@@ -1,22 +1,15 @@
+-cmake_minimum_required(VERSION 2.8)
+-if (CMAKE_VERSION VERSION_LESS "3")
+-  project(json11 CXX)
+-else()
+-  cmake_policy(SET CMP0048 NEW)
+-  project(json11 VERSION 1.0.0 LANGUAGES CXX)
+-endif()
++cmake_minimum_required(VERSION 3.8)
++
++cmake_policy(SET CMP0048 NEW)
++project(json11 VERSION 1.0.0 LANGUAGES CXX)
+ 
+ enable_testing()
+ 
+ option(JSON11_BUILD_TESTS "Build unit tests" OFF)
+ option(JSON11_ENABLE_DR1467_CANARY "Enable canary test for DR 1467" OFF)
+ 
+-if(CMAKE_VERSION VERSION_LESS "3")
+-  add_definitions(-std=c++11)
+-else()
+-  set(CMAKE_CXX_STANDARD 11)
+-  set(CMAKE_CXX_STANDARD_REQUIRED ON)
+-endif()
++set(CMAKE_CXX_STANDARD 11)
++set(CMAKE_CXX_STANDARD_REQUIRED ON)
+ 
+ if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+   set(CMAKE_INSTALL_PREFIX /usr)
+--
+libgit2 1.0.1
+

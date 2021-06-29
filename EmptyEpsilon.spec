@@ -23,18 +23,13 @@ URL:            http://emptyepsilon.org/
 Source0:        https://github.com/daid/EmptyEpsilon/archive/EE-%{version}.zip#/EmptyEpsilon-EE-%{version}.zip
 Source1:        https://github.com/daid/SeriousProton/archive/EE-%{version}.zip#/SeriousProton-EE-%{version}.zip
 
-# The "FindJson11.cmake" file has been taken from the following project:
-#   https://github.com/MASKOR/mapit/blob/master/cmake/Findjson11.cmake
-# which is licensed under LGPL-3.0 License
-Source2:        Findjson11.cmake
-
 
 
 # EmptyEpsilon downstream patches:
 #Patch1:
 
 # SeriousProton downstream patches:
-Patch20:        json_debundle.patch
+#Patch20:
 
 # EmptyEpsilon upstream patches:
 Patch40:        upstream_EE_001_69d93e6acd.patch
@@ -46,6 +41,7 @@ Patch43:        upstream_EE_004_530fe32f95.patch
 Patch60:        upstream_SP_001_32509f2db9.patch
 Patch61:        upstream_SP_002_d52a1b1b61.patch
 Patch62:        upstream_SP_003_ec30d87c22.patch
+Patch63:        upstream_SP_004_adbba45fd9.patch
 
 
 
@@ -66,7 +62,6 @@ Note: Network play require port 35666 UDP and TCP allowed in firewall.
 %prep
 %setup -q -a 1 -n EmptyEpsilon-EE-%{version}
 
-%patch20 -p1 -d SeriousProton-EE-%{version}
 %patch40 -p1
 %patch41 -p1
 %patch42 -p1
@@ -74,9 +69,7 @@ Note: Network play require port 35666 UDP and TCP allowed in firewall.
 %patch60 -p1 -d SeriousProton-EE-%{version}
 %patch61 -p1 -d SeriousProton-EE-%{version}
 %patch62 -p1 -d SeriousProton-EE-%{version}
-
-# Copy CMake module for finding "json11" to the project
-cp %{SOURCE2} SeriousProton-EE-%{version}/cmake/
+%patch63 -p1 -d SeriousProton-EE-%{version}
 
 %build
 %cmake3 \
@@ -84,6 +77,7 @@ cp %{SOURCE2} SeriousProton-EE-%{version}/cmake/
   -DCPACK_PACKAGE_VERSION_MAJOR=%{version_major} \
   -DCPACK_PACKAGE_VERSION_MINOR=%{version_minor} \
   -DCPACK_PACKAGE_VERSION_PATCH=%{version_patch} \
+  -DWITH_JSON="system" \
   -DCONFIG_DIR=%{_sysconfdir}/emptyepsilon/
 
 
