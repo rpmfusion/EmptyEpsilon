@@ -2,8 +2,6 @@
 %global version_minor 06
 %global version_patch 23
 
-%undefine __cmake_in_source_build
-
 Name:           EmptyEpsilon
 Summary:        Spaceship bridge simulator game
 Version:        %{version_major}.%{version_minor}.%{version_patch}
