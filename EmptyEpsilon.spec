@@ -33,16 +33,21 @@ Source2:        Findjson11.cmake
 
 
 # EmptyEpsilon downstream patches:
-Patch1:         glm_debundle.patch
+#Patch1:
 
 # SeriousProton downstream patches:
 Patch20:        json_debundle.patch
 
 # EmptyEpsilon upstream patches:
-#Patch40:
+Patch40:        upstream_EE_001_69d93e6acd.patch
+Patch41:        upstream_EE_002_872ef2667c.patch
+Patch42:        upstream_EE_003_ee0cd42bfe.patch
+Patch43:        upstream_EE_004_530fe32f95.patch
 
 # SeriousProton upstream patches:
-Patch60:        upstream_SP_002_d52a1b1b61.patch
+Patch60:        upstream_SP_001_32509f2db9.patch
+Patch61:        upstream_SP_002_d52a1b1b61.patch
+Patch62:        upstream_SP_003_ec30d87c22.patch
 
 
 
@@ -63,9 +68,14 @@ Note: Network play require port 35666 UDP and TCP allowed in firewall.
 %prep
 %setup -q -a 1 -n EmptyEpsilon-EE-%{version}
 
-%patch1 -p1
 %patch20 -p1 -d SeriousProton-EE-%{version}
+%patch40 -p1
+%patch41 -p1
+%patch42 -p1
+%patch43 -p1
 %patch60 -p1 -d SeriousProton-EE-%{version}
+%patch61 -p1 -d SeriousProton-EE-%{version}
+%patch62 -p1 -d SeriousProton-EE-%{version}
 
 # Copy CMake module for finding "json11" to the project
 cp %{SOURCE2} SeriousProton-EE-%{version}/cmake/
