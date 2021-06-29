@@ -42,7 +42,7 @@ Patch60:        upstream_SP_001_32509f2db9.patch
 Patch61:        upstream_SP_002_d52a1b1b61.patch
 Patch62:        upstream_SP_003_ec30d87c22.patch
 Patch63:        upstream_SP_004_adbba45fd9.patch
-
+Patch64:        upstream_SP_005_0d1ac45b73.patch
 
 
 Recommends:     xclip
@@ -70,6 +70,8 @@ Note: Network play require port 35666 UDP and TCP allowed in firewall.
 %patch61 -p1 -d SeriousProton-EE-%{version}
 %patch62 -p1 -d SeriousProton-EE-%{version}
 %patch63 -p1 -d SeriousProton-EE-%{version}
+%patch64 -p1 -d SeriousProton-EE-%{version}
+
 
 %build
 %cmake3 \
@@ -78,6 +80,7 @@ Note: Network play require port 35666 UDP and TCP allowed in firewall.
   -DCPACK_PACKAGE_VERSION_MINOR=%{version_minor} \
   -DCPACK_PACKAGE_VERSION_PATCH=%{version_patch} \
   -DWITH_JSON="system" \
+  -DWITH_GLM="system" \
   -DCONFIG_DIR=%{_sysconfdir}/emptyepsilon/
 
 
