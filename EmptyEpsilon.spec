@@ -5,7 +5,7 @@
 Name:           EmptyEpsilon
 Summary:        Spaceship bridge simulator game
 Version:        %{version_major}.%{version_minor}.%{version_patch}
-Release:        2%{?dist}
+Release:        3%{?dist}
 License:        GPLv2
 
 BuildRequires:  cmake3
@@ -118,6 +118,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 %{_datadir}/applications/%{name}.desktop
 
 %changelog
+* Thu Feb 10 2022 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 2021.06.23-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
 * Tue Aug 03 2021 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 2021.06.23-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
 
