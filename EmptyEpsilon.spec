@@ -15,6 +15,7 @@ BuildRequires:  mesa-libGLU-devel >= 9.0.0
 BuildRequires:  desktop-file-utils
 # The following version of "glm-devel" is not currently available for Fedora 33 and older
 BuildRequires:  glm-devel >= 0.9.9.8
+BuildRequires:  SDL2-devel
 
 ExcludeArch:    ppc64 ppc64le
 
