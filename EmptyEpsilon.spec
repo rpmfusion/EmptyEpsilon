@@ -1,21 +1,20 @@
-%global version_major 2021
-%global version_minor 06
-%global version_patch 23
+%global version_major 2022
+%global version_minor 10
+%global version_patch 28
 
 Name:           EmptyEpsilon
 Summary:        Spaceship bridge simulator game
 Version:        %{version_major}.%{version_minor}.%{version_patch}
-Release:        5%{?dist}
-License:        GPLv2
+Release:        1%{?dist}
+License:        GPL-2.0-only
 
-BuildRequires:  cmake3
+BuildRequires:  cmake
 BuildRequires:  gcc-c++
 BuildRequires:  SFML-devel >= 2.5.1
 BuildRequires:  mesa-libGLU-devel >= 9.0.0
 BuildRequires:  desktop-file-utils
 # The following version of "glm-devel" is not currently available for Fedora 33 and older
 BuildRequires:  glm-devel >= 0.9.9.8
-BuildRequires:  json11-devel
 
 ExcludeArch:    ppc64 ppc64le
 
@@ -26,23 +25,13 @@ Source1:        https://github.com/daid/SeriousProton/archive/EE-%{version}.zip#
 
 
 # EmptyEpsilon downstream patches:
-#Patch1:
+Patch0:         gcc12.patch
 
 # SeriousProton downstream patches:
-#Patch20:
 
 # EmptyEpsilon upstream patches:
-Patch40:        upstream_EE_001_69d93e6acd.patch
-Patch41:        upstream_EE_002_872ef2667c.patch
-Patch42:        upstream_EE_003_ee0cd42bfe.patch
-Patch43:        upstream_EE_004_530fe32f95.patch
 
 # SeriousProton upstream patches:
-Patch60:        upstream_SP_001_32509f2db9.patch
-Patch61:        upstream_SP_002_d52a1b1b61.patch
-Patch62:        upstream_SP_003_ec30d87c22.patch
-Patch63:        upstream_SP_004_adbba45fd9.patch
-Patch64:        upstream_SP_005_0d1ac45b73.patch
 
 
 Recommends:     xclip
@@ -61,34 +50,24 @@ Note: Network play require port 35666 UDP and TCP allowed in firewall.
 
 %prep
 %setup -q -a 1 -n EmptyEpsilon-EE-%{version}
-
-%patch40 -p1
-%patch41 -p1
-%patch42 -p1
-%patch43 -p1
-%patch60 -p1 -d SeriousProton-EE-%{version}
-%patch61 -p1 -d SeriousProton-EE-%{version}
-%patch62 -p1 -d SeriousProton-EE-%{version}
-%patch63 -p1 -d SeriousProton-EE-%{version}
-%patch64 -p1 -d SeriousProton-EE-%{version}
+%patch -P0 -p1
 
 
 %build
-%cmake3 \
+%cmake \
   -DSERIOUS_PROTON_DIR=SeriousProton-EE-%{version}/ \
   -DCPACK_PACKAGE_VERSION_MAJOR=%{version_major} \
   -DCPACK_PACKAGE_VERSION_MINOR=%{version_minor} \
   -DCPACK_PACKAGE_VERSION_PATCH=%{version_patch} \
-  -DWITH_JSON="system" \
   -DWITH_GLM="system" \
   -DCONFIG_DIR=%{_sysconfdir}/emptyepsilon/
 
 
 
-%cmake3_build
+%cmake_build
 
 %install
-%cmake3_install
+%cmake_install
 
 # icon to pixmaps
 mkdir -p %{buildroot}%{_datadir}/pixmaps
@@ -114,10 +93,14 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 %license LICENSE
 %{_bindir}/EmptyEpsilon
 %{_datadir}/emptyepsilon
+%{_datadir}/icons/hicolor/1024x1024/
 %{_datadir}/pixmaps/EmptyEpsilon.png
 %{_datadir}/applications/%{name}.desktop
 
 %changelog
+* Thu Aug 03 2023 Leigh Scott <leigh123linux@gmail.com> - 2022.10.28-1
+- Rebase to version 2022.10.28
+
 * Thu Aug 03 2023 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 2021.06.23-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
 
