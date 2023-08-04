@@ -1,0 +1,39 @@
+--- a/SeriousProton-EE-2021.06.23/src/httpServer.cpp
++++ b/SeriousProton-EE-2021.06.23/src/httpServer.cpp
+@@ -1,5 +1,6 @@
+ #include <string.h>
+ #include <stdio.h>
++#include <cstdint>
+ 
+ #include "httpServer.h"
+ #include "logging.h"
+
+--- a/SeriousProton-EE-2021.06.23/src/multiplayer.h
++++ b/SeriousProton-EE-2021.06.23/src/multiplayer.h
+@@ -4,6 +4,7 @@
+ #include <SFML/Network.hpp>
+ #include <SFML/Graphics/Color.hpp>
+ #include <stdint.h>
++#include <cstdint>
+ #include "Updatable.h"
+ #include "stringImproved.h"
+ 
+--- a/SeriousProton-EE-2021.06.23/src/scriptInterfaceMagic.cpp
++++ b/SeriousProton-EE-2021.06.23/src/scriptInterfaceMagic.cpp
+@@ -1,4 +1,5 @@
+ #include "scriptInterfaceMagic.h"
++#include <cstdint>
+ 
+ ScriptClassInfo* scriptClassInfoList;
+ 
+
+--- a/SeriousProton-EE-2021.06.23/src/fixedSocket.h
++++ b/SeriousProton-EE-2021.06.23/src/fixedSocket.h
+@@ -3,6 +3,7 @@
+ 
+ #include <SFML/Network.hpp>
+ #include <list>
++#include <cstdint>
+ 
+ //The sf::TcpSocket has some problems with sending partial packets when the the OS buffers are full.
+ //The TcpSocket of SeriousProton solves this by storing the partial packet in a buffer, and storing all other packets after that as well.

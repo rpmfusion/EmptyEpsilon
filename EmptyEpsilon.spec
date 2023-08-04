@@ -8,14 +8,14 @@ Version:        %{version_major}.%{version_minor}.%{version_patch}
 Release:        5%{?dist}
 License:        GPLv2
 
-BuildRequires:  cmake3
+BuildRequires:  cmake
+BuildRequires:  dos2unix
 BuildRequires:  gcc-c++
 BuildRequires:  SFML-devel >= 2.5.1
 BuildRequires:  mesa-libGLU-devel >= 9.0.0
 BuildRequires:  desktop-file-utils
 # The following version of "glm-devel" is not currently available for Fedora 33 and older
 BuildRequires:  glm-devel >= 0.9.9.8
-BuildRequires:  json11-devel
 
 ExcludeArch:    ppc64 ppc64le
 
@@ -26,7 +26,7 @@ Source1:        https://github.com/daid/SeriousProton/archive/EE-%{version}.zip#
 
 
 # EmptyEpsilon downstream patches:
-#Patch1:
+Patch1:         gcc12.patch
 
 # SeriousProton downstream patches:
 #Patch20:
@@ -61,34 +61,36 @@ Note: Network play require port 35666 UDP and TCP allowed in firewall.
 
 %prep
 %setup -q -a 1 -n EmptyEpsilon-EE-%{version}
+dos2unix SeriousProton-EE-2021.06.23/src/httpServer.cpp \
+ SeriousProton-EE-2021.06.23/src/scriptInterfaceMagic.cpp
 
-%patch40 -p1
-%patch41 -p1
-%patch42 -p1
-%patch43 -p1
-%patch60 -p1 -d SeriousProton-EE-%{version}
-%patch61 -p1 -d SeriousProton-EE-%{version}
-%patch62 -p1 -d SeriousProton-EE-%{version}
-%patch63 -p1 -d SeriousProton-EE-%{version}
-%patch64 -p1 -d SeriousProton-EE-%{version}
+%patch 1 -p1
+%patch 40 -p1
+%patch 41 -p1
+%patch 42 -p1
+%patch 43 -p1
+%patch 60 -p1 -d SeriousProton-EE-%{version}
+%patch 61 -p1 -d SeriousProton-EE-%{version}
+%patch 62 -p1 -d SeriousProton-EE-%{version}
+%patch 63 -p1 -d SeriousProton-EE-%{version}
+%patch 64 -p1 -d SeriousProton-EE-%{version}
 
 
 %build
-%cmake3 \
+%cmake \
   -DSERIOUS_PROTON_DIR=SeriousProton-EE-%{version}/ \
   -DCPACK_PACKAGE_VERSION_MAJOR=%{version_major} \
   -DCPACK_PACKAGE_VERSION_MINOR=%{version_minor} \
   -DCPACK_PACKAGE_VERSION_PATCH=%{version_patch} \
-  -DWITH_JSON="system" \
   -DWITH_GLM="system" \
   -DCONFIG_DIR=%{_sysconfdir}/emptyepsilon/
 
 
 
-%cmake3_build
+%cmake_build
 
 %install
-%cmake3_install
+%cmake_install
 
 # icon to pixmaps
 mkdir -p %{buildroot}%{_datadir}/pixmaps
@@ -184,4 +186,3 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 
 * Wed Feb 15 2017 Jan Kalina <jkalina@redhat.com> - 2017.01.19-3
 - New package built, applied fixes from fedora review
-
