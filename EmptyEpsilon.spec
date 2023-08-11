@@ -5,7 +5,7 @@
 Name:           EmptyEpsilon
 Summary:        Spaceship bridge simulator game
 Version:        %{version_major}.%{version_minor}.%{version_patch}
-Release:        5%{?dist}
+Release:        6%{?dist}
 License:        GPLv2
 
 BuildRequires:  cmake
@@ -83,6 +83,7 @@ dos2unix SeriousProton-EE-2021.06.23/src/httpServer.cpp \
   -DCPACK_PACKAGE_VERSION_MINOR=%{version_minor} \
   -DCPACK_PACKAGE_VERSION_PATCH=%{version_patch} \
   -DWITH_GLM="system" \
+  -DBUILD_SHARED_LIBS:BOOL=OFF \
   -DCONFIG_DIR=%{_sysconfdir}/emptyepsilon/
 
 
@@ -120,6 +121,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 %{_datadir}/applications/%{name}.desktop
 
 %changelog
+* Fri Aug 11 2023 Leigh Scott <leigh123linux@gmail.com> - 2021.06.23-6
+- Build bundled libjson11 as a static lib 
+
 * Thu Aug 03 2023 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 2021.06.23-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
 
