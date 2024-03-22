@@ -1,12 +1,14 @@
-%global version_major 2021
+%global version_major 2023
 %global version_minor 06
-%global version_patch 23
+%global version_patch 17
 
 Name:           EmptyEpsilon
 Summary:        Spaceship bridge simulator game
 Version:        %{version_major}.%{version_minor}.%{version_patch}
-Release:        7%{?dist}
-License:        GPLv2
+Release:        1%{?dist}
+# Apache-2.0, BSD-3-Clause and Zlib are used in basis_universal
+# MIT is used by meshoptimizer and GLM
+License:        GPL-2.0-only AND Apache-2.0 AND BSD-3-Clause AND Zlib AND MIT
 
 BuildRequires:  cmake
 BuildRequires:  dos2unix
@@ -14,38 +16,27 @@ BuildRequires:  gcc-c++
 BuildRequires:  SFML-devel >= 2.5.1
 BuildRequires:  mesa-libGLU-devel >= 9.0.0
 BuildRequires:  desktop-file-utils
-# The following version of "glm-devel" is not currently available for Fedora 33 and older
+%if 0%{?fedora} < 41
 BuildRequires:  glm-devel >= 0.9.9.8
+%endif
+BuildRequires:  SDL2-devel
 
-ExcludeArch:    ppc64 ppc64le
+ExcludeArch:    %{power64}
 
 URL:            http://emptyepsilon.org/
-Source0:        https://github.com/daid/EmptyEpsilon/archive/EE-%{version}.zip#/EmptyEpsilon-EE-%{version}.zip
-Source1:        https://github.com/daid/SeriousProton/archive/EE-%{version}.zip#/SeriousProton-EE-%{version}.zip
+Source0:        https://github.com/daid/EmptyEpsilon/archive/EE-%{version}/EmptyEpsilon-EE-%{version}.tar.gz
+Source1:        https://github.com/daid/SeriousProton/archive/EE-2023.06.12/SeriousProton-EE-2023.06.12PR.tar.gz
 
+# Upstream wants to download following libraries; we need to bundle them
+Source2:        https://github.com/BinomialLLC/basis_universal/archive/refs/tags/v1_15_update2/basis_universal-1_15_update2.tar.gz
+Source3:        https://github.com/zeux/meshoptimizer/archive/refs/tags/v0.16/meshoptimizer-0.16.tar.gz
 
+# EmptyEpsilon is not compatible with GLM-1.0.1 yet
+Source4:        https://github.com/g-truc/glm/archive/refs/tags/0.9.9.8.tar.gz/glm-0.9.9.8.tar.gz
 
-# EmptyEpsilon downstream patches:
-Patch1:         gcc12.patch
-
-# SeriousProton downstream patches:
-#Patch20:
-
-# EmptyEpsilon upstream patches:
-Patch40:        upstream_EE_001_69d93e6acd.patch
-Patch41:        upstream_EE_002_872ef2667c.patch
-Patch42:        upstream_EE_003_ee0cd42bfe.patch
-Patch43:        upstream_EE_004_530fe32f95.patch
-
-# SeriousProton upstream patches:
-Patch60:        upstream_SP_001_32509f2db9.patch
-Patch61:        upstream_SP_002_d52a1b1b61.patch
-Patch62:        upstream_SP_003_ec30d87c22.patch
-Patch63:        upstream_SP_004_adbba45fd9.patch
-Patch64:        upstream_SP_005_0d1ac45b73.patch
-
-
-Recommends:     xclip
+Patch0:         EmptyEpsilon-avoid_basis_libs_downloading.patch
+Patch1:         EmptyEpsilon-avoid_meshoptimizer_libs_downloading.patch
+Patch2:         EmptyEpsilon-avoid_glm_libs_downloading.patch
 
 %description
 EmptyEpsilon places you in the roles of a spaceship's bridge officers, like
@@ -60,38 +51,67 @@ information and follow orders.
 Note: Network play require port 35666 UDP and TCP allowed in firewall.
 
 %prep
-%setup -q -a 1 -n EmptyEpsilon-EE-%{version}
-dos2unix SeriousProton-EE-2021.06.23/src/httpServer.cpp \
- SeriousProton-EE-2021.06.23/src/scriptInterfaceMagic.cpp
+%autosetup -a 1 -n EmptyEpsilon-EE-%{version} -N
 
-%patch 1 -p1
-%patch 40 -p1
-%patch 41 -p1
-%patch 42 -p1
-%patch 43 -p1
-%patch 60 -p1 -d SeriousProton-EE-%{version}
-%patch 61 -p1 -d SeriousProton-EE-%{version}
-%patch 62 -p1 -d SeriousProton-EE-%{version}
-%patch 63 -p1 -d SeriousProton-EE-%{version}
-%patch 64 -p1 -d SeriousProton-EE-%{version}
+# basis
+%patch -P 0 -p1 -b .backup_basis
+%if 0%{?fedora} > 40
+%patch -P 2 -p1 -b .backup_glm
+%endif
+pushd SeriousProton-EE-2023.06.12PR/libs/basis_universal
+tar -xf %{SOURCE2}
+mv basis_universal-1_15_update2 basis
+mv basis/LICENSE basis/basis-LICENSE
+# Use CMakeLists.txt from EmptyEpsilon upstream to compile 'basis' static library
+cp -p CMakeLists.txt basis/
+popd
 
+# GLM
+%if 0%{?fedora} > 40
+tar -xf %{SOURCE4}
+mv glm-0.9.9.8 glm
+mv glm/copying.txt glm/glm-copying.txt
+mv glm SeriousProton-EE-2023.06.12PR/
+%endif
+
+# meshoptimizer
+tar -xf %{SOURCE3}
+mv meshoptimizer-0.16 meshoptimizer
+mv meshoptimizer/LICENSE.md meshoptimizer/meshoptimizer-LICENSE.md
+%patch -P 1 -p1 -b .backup
 
 %build
+%global __cmake_in_source_build 1
+pushd SeriousProton-EE-2023.06.12PR/libs/basis_universal/basis
+export CFLAGS="%{optflags}"
+export CXXFLAGS="%{optflags}"
+%cmake  
+%cmake_build
+popd
+
+export CXXFLAGS="%{optflags} -I../SeriousProton-EE-2023.06.12PR/libs/basis_universal/basis"
+export LDFLAGS="%{__global_ldflags} -L../SeriousProton-EE-2023.06.12PR/libs/basis_universal/basis"
 %cmake \
-  -DSERIOUS_PROTON_DIR=SeriousProton-EE-%{version}/ \
+  -DSERIOUS_PROTON_DIR=SeriousProton-EE-2023.06.12PR/ \
   -DCPACK_PACKAGE_VERSION_MAJOR=%{version_major} \
   -DCPACK_PACKAGE_VERSION_MINOR=%{version_minor} \
   -DCPACK_PACKAGE_VERSION_PATCH=%{version_patch} \
+%if 0%{?fedora} > 40
+  -DWITH_GLM="bundled" \
+%else
   -DWITH_GLM="system" \
+%endif
   -DBUILD_SHARED_LIBS:BOOL=OFF \
   -DCONFIG_DIR=%{_sysconfdir}/emptyepsilon/
-
-
 
 %cmake_build
 
 %install
 %cmake_install
+
+rm -f %{buildroot}%{_datadir}/emptyepsilon/scripts/.gitignore
+
+install -pm 644 README.md CHANGELOG.md %{buildroot}%{_docdir}/EmptyEpsilon/
 
 # icon to pixmaps
 mkdir -p %{buildroot}%{_datadir}/pixmaps
@@ -113,14 +133,22 @@ EOF
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 
 %files
-%doc README.md script_reference.html
-%license LICENSE
-%{_bindir}/EmptyEpsilon
+%license LICENSE meshoptimizer/meshoptimizer-LICENSE.md
+%license SeriousProton-EE-2023.06.12PR/libs/basis_universal/basis/basis-LICENSE
+%if 0%{?fedora} > 40
+%license SeriousProton-EE-2023.06.12PR/glm/glm-copying.txt
+%endif
+%{_bindir}/%{name}
 %{_datadir}/emptyepsilon
-%{_datadir}/pixmaps/EmptyEpsilon.png
+%{_datadir}/pixmaps/%{name}.png
+%{_datadir}/icons/hicolor/1024x1024/apps/%{name}.png
 %{_datadir}/applications/%{name}.desktop
+%{_docdir}/EmptyEpsilon/
 
 %changelog
+* Sun Mar 10 2024 Antonio Trande <sagitter@fedoraproject.org> - 2023.06.17-1
+- Release 2023.06.17
+
 * Sun Feb 04 2024 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 2021.06.23-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
 

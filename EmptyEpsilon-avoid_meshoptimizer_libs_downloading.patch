@@ -1,0 +1,43 @@
+--- a/CMakeLists.orig.txt	2023-06-14 09:23:22.000000000 +0200
++++ b/CMakeLists.txt	2024-03-12 18:03:05.165741793 +0100
+@@ -108,36 +108,11 @@
+ 
+ # Meshoptimizer
+ set(MESHOPTIMIZER_VERSION 0.16)
+-if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.11)
+-  include(FetchContent)
+-  FetchContent_Declare(
+-    meshoptimizer
+-    GIT_REPOSITORY https://github.com/zeux/meshoptimizer/
+-    GIT_TAG "v${MESHOPTIMIZER_VERSION}"
+-  )
+-  FetchContent_GetProperties(meshoptimizer)
+-else()
+-  # Poor man's FetchContent.
+-  set(MESHOPTIMIZER_BASE_PATH "${EXTERNALS_DIR}")
+-  set(meshoptimizer_POPULATED FALSE)
+-  if(NOT EXISTS "${MESHOPTIMIZER_BASE_PATH}/meshoptimizer/CMakeLists.txt")
+-    set(MESHOPTIMIZER_ZIP "${DOWNLOADS_DIR}/meshoptimizer.zip")
+-    file(DOWNLOAD "https://github.com/zeux/meshoptimizer/archive/refs/tags/v${MESHOPTIMIZER_VERSION}.zip" "${MESHOPTIMIZER_ZIP}" TIMEOUT 60 TLS_VERIFY ON)
++set(MESHOPTIMIZER_BASE_PATH "./")
++set(meshoptimizer_SOURCE_DIR "${MESHOPTIMIZER_BASE_PATH}/meshoptimizer")
++set(meshoptimizer_BINARY_DIR "${PROJECT_BINARY_DIR}/meshoptimizer")
+ 
+-    execute_process(COMMAND ${CMAKE_COMMAND} -E tar -xf "${MESHOPTIMIZER_ZIP}" WORKING_DIRECTORY "${MESHOPTIMIZER_BASE_PATH}")
+-    execute_process(COMMAND ${CMAKE_COMMAND} -E rename "meshoptimizer-${MESHOPTIMIZER_VERSION}" meshoptimizer WORKING_DIRECTORY "${MESHOPTIMIZER_BASE_PATH}")
+-  endif()
+-
+-  set(meshoptimizer_SOURCE_DIR "${MESHOPTIMIZER_BASE_PATH}/meshoptimizer")
+-  set(meshoptimizer_BINARY_DIR "${PROJECT_BINARY_DIR}/externals/meshoptimizer")
+-endif()
+-
+-if(NOT meshoptimizer_POPULATED)
+-  if(COMMAND FetchContent_Populate)
+-    FetchContent_Populate(meshoptimizer)
+-  endif()
+-  add_subdirectory(${meshoptimizer_SOURCE_DIR} ${meshoptimizer_BINARY_DIR} EXCLUDE_FROM_ALL)
+-endif()
++add_subdirectory(${meshoptimizer_SOURCE_DIR} ${meshoptimizer_BINARY_DIR} EXCLUDE_FROM_ALL)
+ 
+ set(GUI_LIB_SOURCES
+     src/gui/colorConfig.cpp

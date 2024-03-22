@@ -1,0 +1,56 @@
+--- a/SeriousProton-EE-2023.06.12PR/libs/basis_universal/CMakeLists.orig.txt	2023-06-09 10:35:14.000000000 +0200
++++ b/SeriousProton-EE-2023.06.12PR/libs/basis_universal/CMakeLists.txt	2024-03-10 19:04:39.372885921 +0100
+@@ -3,35 +3,8 @@
+ 
+ find_package(Threads REQUIRED)
+ 
+-set(BASIS_VERSION "v1_15_update2")
+-set(BASIS_URL "https://github.com/BinomialLLC/basis_universal")
+-if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.11)
+-    include(FetchContent)
+-    FetchContent_Declare(
+-        basis
+-        GIT_REPOSITORY "${BASIS_URL}"
+-        GIT_TAG "${BASIS_VERSION}"
+-    )
+-    FetchContent_GetProperties(basis)
+-else()
+-    set(BASIS_BASE_PATH "${EXTERNALS_DIR}")
+-    set(basis_POPULATED FALSE)
+-    if(NOT EXISTS "${BASIS_BASE_PATH}/basis/CMakeLists.txt")
+-        set(BASIS_ZIP "${DOWNLOADS_DIR}/basis.zip")
+-        file(DOWNLOAD "${BASIS_URL}/archive/refs/tags/${BASIS_VERSION}.zip" "${BASIS_ZIP}" TIMEOUT 60 TLS_VERIFY ON)
+-
+-        file(MAKE_DIRECTORY "${BASIS_BASE_PATH}/basis")
+-        execute_process(COMMAND ${CMAKE_COMMAND} -E tar -xf "${BASIS_ZIP}" WORKING_DIRECTORY "${BASIS_BASE_PATH}")
+-    endif()
++set(basis_SOURCE_DIR "./")
+ 
+-    set(basis_SOURCE_DIR "${BASIS_BASE_PATH}/basis")
+-    set(basis_BINARY_DIR "${PROJECT_BINARY_DIR}/externals/basis")
+-endif()
+-
+-if(NOT basis_POPULATED)
+-    if(COMMAND FetchContent_Populate)
+-        FetchContent_Populate(basis)
+-    endif()
+     if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+         set(BUILD_X64 FALSE CACHE BOOL "")
+     endif()
+@@ -117,4 +90,3 @@
+     )
+     target_compile_features(basisu-transcoder PUBLIC cxx_std_11)
+     target_include_directories(basisu-transcoder INTERFACE "${basis_SOURCE_DIR}")
+-endif()
+\ No newline at end of file
+--- a/SeriousProton-EE-2023.06.12PR/CMakeLists.orig.txt	2023-06-09 10:35:14.000000000 +0200
++++ b/SeriousProton-EE-2023.06.12PR/CMakeLists.txt	2024-03-10 20:05:58.833718666 +0100
+@@ -132,7 +132,7 @@
+ endif()
+ 
+ # BASIS Universal (Supercompressed GPU Texture Codec)
+-add_subdirectory(libs/basis_universal)
++add_subdirectory(libs/basis_universal/basis)
+ 
+ #---------------------------------File lists-----------------------------------
+ set(source_files #All SeriousProton's objects to compile

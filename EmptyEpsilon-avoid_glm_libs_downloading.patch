@@ -1,0 +1,28 @@
+--- a/SeriousProton-EE-2023.06.12PR/CMakeLists.txt.backup_basis	2023-06-09 10:35:14.000000000 +0200
++++ b/SeriousProton-EE-2023.06.12PR/CMakeLists.txt	2024-03-12 18:50:31.811860098 +0100
+@@ -55,23 +55,8 @@
+     #    * 'auto', if we failed to find a suitable system package,
+     #    * 'bundled'
+     message(STATUS "GLM version used: BUNDLED")
+-    
+-    set(GLM_VERSION "0.9.9.8")
+-    set(GLM_URL "https://github.com/g-truc/glm")
+-	include(FetchContent)
+-	FetchContent_Declare(
+-		glm
+-		GIT_REPOSITORY "${GLM_URL}"
+-		GIT_TAG "${GLM_VERSION}"
+-	)
+-	FetchContent_GetProperties(glm)
+-
+-    if(NOT glm_POPULATED)
+-        if(COMMAND FetchContent_Populate)
+-            FetchContent_Populate(glm)
+-        endif()
+-        add_subdirectory(${glm_SOURCE_DIR} ${glm_BINARY_DIR} EXCLUDE_FROM_ALL)
+-    endif()
++    set(glm_SOURCE_DIR "glm")
++    add_subdirectory(${glm_SOURCE_DIR} ${glm_BINARY_DIR} EXCLUDE_FROM_ALL)
+ endif()
+ 
+ add_subdirectory(libs/Box2D)
