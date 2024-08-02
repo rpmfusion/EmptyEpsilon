@@ -5,7 +5,7 @@
 Name:           EmptyEpsilon
 Summary:        Spaceship bridge simulator game
 Version:        %{version_major}.%{version_minor}.%{version_patch}
-Release:        1%{?dist}
+Release:        2%{?dist}
 # Apache-2.0, BSD-3-Clause and Zlib are used in basis_universal
 # MIT is used by meshoptimizer and GLM
 License:        GPL-2.0-only AND Apache-2.0 AND BSD-3-Clause AND Zlib AND MIT
@@ -146,6 +146,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 %{_docdir}/EmptyEpsilon/
 
 %changelog
+* Fri Aug 02 2024 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 2023.06.17-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_41_Mass_Rebuild
+
 * Sun Mar 10 2024 Antonio Trande <sagitter@fedoraproject.org> - 2023.06.17-1
 - Release 2023.06.17
 
