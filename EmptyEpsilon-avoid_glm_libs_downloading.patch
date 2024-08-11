@@ -1,5 +1,5 @@
---- a/SeriousProton-EE-2023.06.12PR/CMakeLists.txt.backup_basis	2023-06-09 10:35:14.000000000 +0200
-+++ b/SeriousProton-EE-2023.06.12PR/CMakeLists.txt	2024-03-12 18:50:31.811860098 +0100
+--- a/SeriousProton-EE-2024.08.09/CMakeLists.txt.backup_basis	2023-06-09 10:35:14.000000000 +0200
++++ b/SeriousProton-EE-2024.08.09/CMakeLists.txt	2024-03-12 18:50:31.811860098 +0100
 @@ -55,23 +55,8 @@
      #    * 'auto', if we failed to find a suitable system package,
      #    * 'bundled'

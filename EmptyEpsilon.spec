@@ -1,11 +1,11 @@
-%global version_major 2023
-%global version_minor 06
-%global version_patch 17
+%global version_major 2024
+%global version_minor 08
+%global version_patch 09
 
 Name:           EmptyEpsilon
 Summary:        Spaceship bridge simulator game
 Version:        %{version_major}.%{version_minor}.%{version_patch}
-Release:        2%{?dist}
+Release:        1%{?dist}
 # Apache-2.0, BSD-3-Clause and Zlib are used in basis_universal
 # MIT is used by meshoptimizer and GLM
 License:        GPL-2.0-only AND Apache-2.0 AND BSD-3-Clause AND Zlib AND MIT
@@ -25,14 +25,14 @@ ExcludeArch:    %{power64}
 
 URL:            http://emptyepsilon.org/
 Source0:        https://github.com/daid/EmptyEpsilon/archive/EE-%{version}/EmptyEpsilon-EE-%{version}.tar.gz
-Source1:        https://github.com/daid/SeriousProton/archive/EE-2023.06.12/SeriousProton-EE-2023.06.12PR.tar.gz
+Source1:        https://github.com/daid/SeriousProton/archive/EE-%{version}/SeriousProton-EE-%{version}.tar.gz
 
 # Upstream wants to download following libraries; we need to bundle them
 Source2:        https://github.com/BinomialLLC/basis_universal/archive/refs/tags/v1_15_update2/basis_universal-1_15_update2.tar.gz
 Source3:        https://github.com/zeux/meshoptimizer/archive/refs/tags/v0.16/meshoptimizer-0.16.tar.gz
 
 # EmptyEpsilon is not compatible with GLM-1.0.1 yet
-Source4:        https://github.com/g-truc/glm/archive/refs/tags/0.9.9.8.tar.gz/glm-0.9.9.8.tar.gz
+Source4:        https://github.com/g-truc/glm/archive/refs/tags/0.9.9.8.tar.gz
 
 Patch0:         EmptyEpsilon-avoid_basis_libs_downloading.patch
 Patch1:         EmptyEpsilon-avoid_meshoptimizer_libs_downloading.patch
@@ -58,7 +58,7 @@ Note: Network play require port 35666 UDP and TCP allowed in firewall.
 %if 0%{?fedora} > 40
 %patch -P 2 -p1 -b .backup_glm
 %endif
-pushd SeriousProton-EE-2023.06.12PR/libs/basis_universal
+pushd SeriousProton-EE-%{version}/libs/basis_universal
 tar -xf %{SOURCE2}
 mv basis_universal-1_15_update2 basis
 mv basis/LICENSE basis/basis-LICENSE
@@ -71,7 +71,7 @@ popd
 tar -xf %{SOURCE4}
 mv glm-0.9.9.8 glm
 mv glm/copying.txt glm/glm-copying.txt
-mv glm SeriousProton-EE-2023.06.12PR/
+mv glm SeriousProton-EE-%{version}/
 %endif
 
 # meshoptimizer
@@ -82,17 +82,17 @@ mv meshoptimizer/LICENSE.md meshoptimizer/meshoptimizer-LICENSE.md
 
 %build
 %global __cmake_in_source_build 1
-pushd SeriousProton-EE-2023.06.12PR/libs/basis_universal/basis
+pushd SeriousProton-EE-%{version}/libs/basis_universal/basis
 export CFLAGS="%{optflags}"
 export CXXFLAGS="%{optflags}"
-%cmake  
+%cmake
 %cmake_build
 popd
 
-export CXXFLAGS="%{optflags} -I../SeriousProton-EE-2023.06.12PR/libs/basis_universal/basis"
-export LDFLAGS="%{__global_ldflags} -L../SeriousProton-EE-2023.06.12PR/libs/basis_universal/basis"
+export CXXFLAGS="%{optflags} -I../SeriousProton-EE-%{version}/libs/basis_universal/basis"
+export LDFLAGS="%{__global_ldflags} -L../SeriousProton-EE-%{version}/libs/basis_universal/basis"
 %cmake \
-  -DSERIOUS_PROTON_DIR=SeriousProton-EE-2023.06.12PR/ \
+  -DSERIOUS_PROTON_DIR=SeriousProton-EE-%{version}/ \
   -DCPACK_PACKAGE_VERSION_MAJOR=%{version_major} \
   -DCPACK_PACKAGE_VERSION_MINOR=%{version_minor} \
   -DCPACK_PACKAGE_VERSION_PATCH=%{version_patch} \
@@ -134,9 +134,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 
 %files
 %license LICENSE meshoptimizer/meshoptimizer-LICENSE.md
-%license SeriousProton-EE-2023.06.12PR/libs/basis_universal/basis/basis-LICENSE
+%license SeriousProton-EE-%{version}/libs/basis_universal/basis/basis-LICENSE
 %if 0%{?fedora} > 40
-%license SeriousProton-EE-2023.06.12PR/glm/glm-copying.txt
+%license SeriousProton-EE-%{version}/glm/glm-copying.txt
 %endif
 %{_bindir}/%{name}
 %{_datadir}/emptyepsilon
@@ -146,6 +146,9 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 %{_docdir}/EmptyEpsilon/
 
 %changelog
+* Sun Aug 11 2024 Michal Schorm <mschorm@redhat.com> - 2024.08.09-1
+- Rebase to 2024.08.09
+
 * Fri Aug 02 2024 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 2023.06.17-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_41_Mass_Rebuild
 
@@ -156,7 +159,7 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
 
 * Fri Aug 11 2023 Leigh Scott <leigh123linux@gmail.com> - 2021.06.23-6
-- Build bundled libjson11 as a static lib 
+- Build bundled libjson11 as a static lib
 
 * Thu Aug 03 2023 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 2021.06.23-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild

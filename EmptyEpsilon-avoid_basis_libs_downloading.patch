@@ -1,5 +1,5 @@
---- a/SeriousProton-EE-2023.06.12PR/libs/basis_universal/CMakeLists.orig.txt	2023-06-09 10:35:14.000000000 +0200
-+++ b/SeriousProton-EE-2023.06.12PR/libs/basis_universal/CMakeLists.txt	2024-03-10 19:04:39.372885921 +0100
+--- a/SeriousProton-EE-2024.08.09/libs/basis_universal/CMakeLists.orig.txt	2023-06-09 10:35:14.000000000 +0200
++++ b/SeriousProton-EE-2024.08.09/libs/basis_universal/CMakeLists.txt	2024-03-10 19:04:39.372885921 +0100
 @@ -3,35 +3,8 @@
  
  find_package(Threads REQUIRED)
@@ -43,8 +43,8 @@
      target_include_directories(basisu-transcoder INTERFACE "${basis_SOURCE_DIR}")
 -endif()
 \ No newline at end of file
---- a/SeriousProton-EE-2023.06.12PR/CMakeLists.orig.txt	2023-06-09 10:35:14.000000000 +0200
-+++ b/SeriousProton-EE-2023.06.12PR/CMakeLists.txt	2024-03-10 20:05:58.833718666 +0100
+--- a/SeriousProton-EE-2024.08.09/CMakeLists.orig.txt	2023-06-09 10:35:14.000000000 +0200
++++ b/SeriousProton-EE-2024.08.09/CMakeLists.txt	2024-03-10 20:05:58.833718666 +0100
 @@ -132,7 +132,7 @@
  endif()
  
