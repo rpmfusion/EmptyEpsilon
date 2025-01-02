@@ -1,6 +1,6 @@
 %global version_major 2024
-%global version_minor 08
-%global version_patch 09
+%global version_minor 12
+%global version_patch 08
 
 Name:           EmptyEpsilon
 Summary:        Spaceship bridge simulator game
@@ -111,26 +111,11 @@ export LDFLAGS="%{__global_ldflags} -L../SeriousProton-EE-%{version}/libs/basis_
 
 rm -f %{buildroot}%{_datadir}/emptyepsilon/scripts/.gitignore
 
-install -pm 644 README.md CHANGELOG.md %{buildroot}%{_docdir}/EmptyEpsilon/
+install -pm 644 README.md CHANGELOG.md %{buildroot}%{_docdir}/%{name}/
 
 # icon to pixmaps
 mkdir -p %{buildroot}%{_datadir}/pixmaps
-install -p -m 644 ./logo.png %{buildroot}%{_datadir}/pixmaps/EmptyEpsilon.png
-
-# .desktop file
-mkdir -p %{buildroot}%{_datadir}/applications
-cat > %{buildroot}%{_datadir}/applications/%{name}.desktop <<'EOF'
-[Desktop Entry]
-Name=%{name}
-GenericName=EmptyEpsilon
-Comment=Spaceship bridge simulator game
-Exec=EmptyEpsilon
-Icon=EmptyEpsilon
-Terminal=false
-Type=Application
-Categories=Game;Simulation;
-EOF
-desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
+install -p -m 644 ./logo.png %{buildroot}%{_datadir}/pixmaps/%{name}.png
 
 %files
 %license LICENSE meshoptimizer/meshoptimizer-LICENSE.md
@@ -141,11 +126,15 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 %{_bindir}/%{name}
 %{_datadir}/emptyepsilon
 %{_datadir}/pixmaps/%{name}.png
-%{_datadir}/icons/hicolor/1024x1024/apps/%{name}.png
-%{_datadir}/applications/%{name}.desktop
-%{_docdir}/EmptyEpsilon/
+%{_datadir}/metainfo/io.github.daid.%{name}.metainfo.xml
+%{_datadir}/icons/hicolor/512x512/apps/io.github.daid.%{name}.png
+%{_datadir}/applications/io.github.daid.%{name}.desktop
+%{_docdir}/%{name}
 
 %changelog
+* Thu Jan 02 2025 Michal Schorm <mschorm@redhat.com> - 2024.12.08-1
+- Rebase to 2024.12.08
+
 * Sun Aug 11 2024 Michal Schorm <mschorm@redhat.com> - 2024.08.09-1
 - Rebase to 2024.08.09
 
