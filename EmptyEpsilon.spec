@@ -5,7 +5,7 @@
 Name:           EmptyEpsilon
 Summary:        Spaceship bridge simulator game
 Version:        %{version_major}.%{version_minor}.%{version_patch}
-Release:        4%{?dist}
+Release:        5%{?dist}
 # Apache-2.0, BSD-3-Clause and Zlib are used in basis_universal
 # MIT is used by meshoptimizer and GLM
 License:        GPL-2.0-only AND Apache-2.0 AND BSD-3-Clause AND Zlib AND MIT
@@ -37,6 +37,7 @@ Source4:        https://github.com/g-truc/glm/archive/refs/tags/0.9.9.8.tar.gz
 Patch0:         EmptyEpsilon-avoid_basis_libs_downloading.patch
 Patch1:         EmptyEpsilon-avoid_meshoptimizer_libs_downloading.patch
 Patch2:         EmptyEpsilon-avoid_glm_libs_downloading.patch
+Patch3:         EmptyEpsilon-gcc16_fixes.patch
 
 %description
 EmptyEpsilon places you in the roles of a spaceship's bridge officers, like
@@ -58,6 +59,8 @@ Note: Network play require port 35666 UDP and TCP allowed in firewall.
 %if 0%{?fedora} > 40
 %patch -P 2 -p1 -b .backup_glm
 %endif
+# Fix C++20 UTF-8 string compatibility issues
+%patch -P 3 -p1 -b .backup_utf8
 pushd SeriousProton-EE-%{version}/libs/basis_universal
 tar -xf %{SOURCE2}
 mv basis_universal-1_15_update2 basis
@@ -132,6 +135,9 @@ install -p -m 644 ./logo.png %{buildroot}%{_datadir}/pixmaps/%{name}.png
 %{_docdir}/%{name}
 
 %changelog
+* Tue Feb 03 2026 Michal Schorm <mschorm@redhat.com> - 2024.12.08-5
+- Fix C++20 UTF-8 string compatibility with GCC 16
+
 * Mon Feb 02 2026 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 2024.12.08-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_44_Mass_Rebuild
 

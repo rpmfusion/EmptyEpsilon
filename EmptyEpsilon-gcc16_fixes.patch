@@ -1,0 +1,18 @@
+diff -Naurp EmptyEpsilon-EE-2024.12.08/src/packResourceProvider.cpp EmptyEpsilon-EE-2024.12.08/src/packResourceProvider.cpp_patched
+--- a/src/packResourceProvider.cpp
++++ b/src/packResourceProvider.cpp
+@@ -92,11 +92,11 @@ void PackResourceProvider::addPackResour
+     {
+         if (!error_code)
+         {
+-            if (!entry.is_directory() && string { entry.path().extension().u8string() }.lower() == ".pack")
+-                new PackResourceProvider(entry.path().u8string());
++            if (!entry.is_directory() && string { entry.path().extension().string() }.lower() == ".pack")
++                new PackResourceProvider(entry.path().string());
+         }
+         else
+-            LOG(WARNING, entry.path().u8string(), " encountered an error: ", error_code.message());
++            LOG(WARNING, entry.path().string(), " encountered an error: ", error_code.message());
+     }
+ #else
+     //Limitation : 
