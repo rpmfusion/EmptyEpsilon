@@ -105,7 +105,8 @@ export LDFLAGS="%{__global_ldflags} -L../SeriousProton-EE-%{version}/libs/basis_
   -DWITH_GLM="system" \
 %endif
   -DBUILD_SHARED_LIBS:BOOL=OFF \
-  -DCONFIG_DIR=%{_sysconfdir}/emptyepsilon/
+  -DCONFIG_DIR=%{_sysconfdir}/emptyepsilon/ \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
 %cmake_build
 
